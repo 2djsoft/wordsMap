@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+
+
+
+<div class="wordsMap" style="height: 500px">
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+    <span>ffffd</span>
+</div>
+
+
+
+
+
+
+<script src="https://snspay.kr/js/jquery-1.8.3.min.js"></script>
+<script>
+(function($){
+    var basicOption = {
+        left: 0,
+        right: 0,
+        top:0,
+        bottom:0,
+        x: 40,
+        y: 40,
+        pause: 4000,
+        speed: 700,
+        opacity: 0.1,
+        minSize: 12,
+        MaxSize: 32,
+        color: ['#000000','#f90000','#00f900','#0000f0'],
+        onloadBefore: function() {
+            return true
+        },
+        onloadAfter: function() {
+            return true
+        }
+    };
+    $.fn.wordsMap = function(option) {
+        var mapMenu = {},
+        el = this;
+        if ($(el).data('wordsMap')) {
+            return;
+        }
+        $.shuffle = function(arr) {
+            for(var j, x, i = arr.length; i; j = parseInt(Math.random() * i), x = arr[--i], arr[i] = arr[j], arr[j] = x);
+            return arr;
+        }
+        var init = function() {
+            if ($(el).data('wordsMap')) {
+                return;
+            }
+            mapMenu.set = $.extend({}, basicOption, option);
+            mapMenu.set.onloadBefore.call('', true);
+            setup();
+        };
+        var setup = function() {
+            var posX = new Array();
+            var posY = new Array();
+            el.wrap('<div class="wordsMap-wrap" style="position:relative"></div>');
+            var maxWidth = Math.ceil(eval($('.wordsMap-wrap').width())) - mapMenu.set.right;
+            var maxHeight = Math.ceil(eval($('.wordsMap-wrap').height())) - mapMenu.set.bottom;
+            for(var i=1; i<mapMenu.set.x; i++){
+                posX.push(eval(Math.ceil(maxWidth/mapMenu.set.x) * i));
+            }
+            for(var i=1; i<mapMenu.set.y; i++){
+                posY.push(eval(Math.ceil(maxHeight/mapMenu.set.y) * i));
+            }
+
+            mapMenu.set.onloadAfter.call('', true);
+            startMap(posX,posY,false);
+            setInterval(function(){
+                startMap(posX,posY,true);
+            },mapMenu.set.pause);
+
+        }
+        var startMap = function(posX,posY,ani) {
+            $.shuffle(posX);
+            $.shuffle(posY);
+            $('.wordsMap-wrap span').each(function(index){
+                var col = $.shuffle(mapMenu.set.color);
+                var elX = posX[index];
+                var elY = posY[index];
+                var op = (((Math.random()*10)/10)+mapMenu.set.opacity).toFixed(1);
+                var size = Math.ceil(((Math.random()*(mapMenu.set.MaxSize-mapMenu.set.minSize)))+mapMenu.set.minSize);
+                if(ani){
+                    $(this).animate({"position":"absolute","left":elX,"top":elY,"opacity":op,"font-size":size,"color":col[0]},mapMenu.set.speed);
+                }else{
+                    $(this).css({"position":"absolute","left":elX,"top":elY,"opacity":op,"font-size":size,"color":col[0]});
+                }
+            });
+        };
+        init();
+    }
+})(jQuery);
+
+$(function(){
+    $('.wordsMap').wordsMap({
+        speed:500,
+        puase:2000,
+        minSize:9,
+        maxSize:42,
+        x:30,
+        y:30,
+        color:['#222222','#666666','#222222','#666666','#21bc99','#a273cb','#1a5ebb','#be5050','#cb9606']
+    });
+});
+
+</script>
+
+</body>
+</html>
